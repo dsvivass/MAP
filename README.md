@@ -1,2 +1,2 @@
-> Practica de Leaflet.js
+> Practica de Leaflet.js y OpenStreetMap
 
