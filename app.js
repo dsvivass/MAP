@@ -46,30 +46,36 @@ var tileLayer = L.tileLayer(tilesProvider).addTo(myMap)
 
 var popup = L.popup();
 
-function onMapClick(e) {
+myMap.on('click', e => {
     popup
         .setLatLng(e.latlng)
         .setContent("You clicked the map at " + e.latlng.toString())
         .openOn(myMap);
-}
-
-myMap.on('click', onMapClick);
+})
 
 var marker = L.marker([4.60971, -74.08175]).addTo(myMap)
 
 marker.bindPopup("<b>Hello world!</b><br>I am a popup.")
 
 const arbol = document.querySelector('#inicio')
+var clicked = false
 
 marker.on('click', e => {
     console.log('clicked')
     // location.href = './pag1.html'
     // arbol.style.display = 'block'
     $('#inicio').toggle() //Se esconde o se muestra cada vez que se hace un click
+    marker.openPopup()
+    clicked = true
     // arbol.toggle()
 }).on('mouseover', e => {
     console.log('mouse over')
     marker.openPopup()
+}).on('mouseout', e => {
+    console.log('Fueraa')
+    if (!clicked) {
+    marker.closePopup()
+    }
 })
 
 
@@ -93,6 +99,11 @@ myMap.on('dblclick', e => {
         icon: iconMarker,
     }).addTo(myMap)
     
+}).on('click', e => {
+    if (clicked) {
+    $('#inicio').toggle()
+    clicked = false
+    }
 })
 
 navigator.geolocation.getCurrentPosition(
