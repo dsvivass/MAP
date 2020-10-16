@@ -37,10 +37,12 @@ const tilesProvider = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
 
 var myMap = L.map('myMap').setView([4.60971, -74.08175], 13)
 
-var Stadia_OSMBright = L.tileLayer('https://tiles.stadiamaps.com/tiles/osm_bright/{z}/{x}/{y}{r}.png', {
-	maxZoom: 20,
-	attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
-}).addTo(myMap);
+// var Stadia_OSMBright = L.tileLayer('https://tiles.stadiamaps.com/tiles/osm_bright/{z}/{x}/{y}{r}.png', {
+// 	maxZoom: 20,
+// 	attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
+// }).addTo(myMap);
+
+var tileLayer = L.tileLayer(tilesProvider).addTo(myMap)
 
 var popup = L.popup();
 
@@ -65,7 +67,11 @@ marker.on('click', e => {
     // arbol.style.display = 'block'
     $('#inicio').toggle() //Se esconde o se muestra cada vez que se hace un click
     // arbol.toggle()
+}).on('mouseover', e => {
+    console.log('mouse over')
+    marker.openPopup()
 })
+
 
 var iconMarker = L.icon({
     iconUrl: './marker2.png',
