@@ -63,8 +63,8 @@ obj = {"UNA1P1": {
     "ID_EXPLORACION": "UNA1P2",
     "COOR_X": 105112,
     "COOR_Y": 116788,
-    "ESTE": -74.051561,
-    "NORTE": 4.737266,
+    "ESTE": -74.081561,
+    "NORTE": 4.797266,
     "ESTRATOS": {
         "UNA1P2E1": {
             "ID_ESTRATO": "UNA1P2E1",
@@ -95,16 +95,12 @@ obj = {"UNA1P1": {
 }
 
 var dict = {}
-var dictLevel = {"inicio": 0}
+var dictLevel = {}
 const unpack = (obj, lenObj, ID, status, ID_prev, i, dicc, col, depth, rec) => {Object.keys(obj).forEach(key => {
-    // console.log('depth', depth)
-    // console.log('i', i)
 
     if (typeof (obj[key]) === 'object' && obj[key] !== null && i <= depth) {
 
         var id = ''
-        // color_btn = ['btn-outline-primary', 'btn-outline-primary', 'btn-outline-success', 'btn-outline-primary', 'btn-outline-info',
-        //          'btn-outline-warning', 'btn-outline-danger']
 
         color_btn = ['btn-primary', 'btn-primary', 'btn-success', 'btn-primary', 'btn-info',
                  'btn-warning', 'btn-danger']
@@ -122,12 +118,7 @@ const unpack = (obj, lenObj, ID, status, ID_prev, i, dicc, col, depth, rec) => {
            dicc = get(dicc, ID, [color_btn[i], color_tr[i], position[i]])
         }
 
-        console.log('Key', key, 'id2', id, 'ID', ID, 'ID_prev', ID_prev)
         Level = get(dictLevel, key+ID, get(dictLevel, ID_prev, 0)[ID_prev] + 1)
-    // console.log(i)
-    console.log(Level)
-        
-
 
             if (status === true) {
                 t = `
@@ -180,7 +171,7 @@ const unpack = (obj, lenObj, ID, status, ID_prev, i, dicc, col, depth, rec) => {
                 
                 `;
 
-                var doc = document.querySelector('#inicio');
+                var doc = document.querySelector('#'+ID_prev);
 
             }
     
@@ -190,8 +181,6 @@ const unpack = (obj, lenObj, ID, status, ID_prev, i, dicc, col, depth, rec) => {
             i+=1
 
             var color = dicc[ID][1]
-            // console.log(document.documentElement.innerHTML)
-            // console.log(i, depth)
             
             return unpack(obj[key], Object.values(obj[key]).filter( v => typeof v === 'object').length, id, true, key+ID, i, dicc, color, depth, true);
         
@@ -208,8 +197,6 @@ const unpack = (obj, lenObj, ID, status, ID_prev, i, dicc, col, depth, rec) => {
 
         var docInfo = document.querySelector('#tbody'+ID);
         docInfo.innerHTML += t_r;
-
-        // console.log('id2', id, 'ID', ID, 'ID_prev', ID_prev)
     
     } 
 
@@ -240,8 +227,8 @@ Object.values(obj).filter( v => {
     }
 })
 
-unpack(obj, Object.values(obj).filter( v => typeof v === 'object').length, 'begin', false, 'inicio', 0, dict, '', 8, false)
-console.log(document.documentElement.innerHTML)
+// unpack(obj, Object.values(obj).filter( v => typeof v === 'object').length, 'begin', false, 'inicio', 0, dict, '', 8, false)
+// console.log(document.documentElement.innerHTML)
 
 // ----------------------
 
@@ -300,14 +287,89 @@ var iconMarker = L.icon({
 
 console.log(idInicial)
 
-// long = obj[idInicial]['ESTE']
-// lat = obj[idInicial]['NORTE']
+var greenIcon = new L.Icon({
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+  });
 
-// var marker2 = L.marker([lat, long], {
-//     icon: iconMarker,
-// }).addTo(myMap)
-// marker.bindPopup(`<b>ID_EXPLORACION:</b><br>${obj[idInicial]['ID_EXPLORACION']}`)
+var blueIcon = new L.Icon({
+iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
+shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+iconSize: [25, 41],
+iconAnchor: [12, 41],
+popupAnchor: [1, -34],
+shadowSize: [41, 41]
+});
 
+const inicio = document.querySelector('#inicio')
+var list = []
+
+Object.keys(obj).forEach(key => {
+
+    dict = {}
+    dictLevel = {}
+
+    div = `<div class="table-responsive text-nowrap col-md-12 mx-auto inicio" id="${key}inicio">
+    
+    </div>`
+
+    inicio.innerHTML += div
+
+    console.log('nameee', key)
+    var objMod = {}
+
+    objMod[key] = obj[key]
+    unpack(objMod, Object.values(obj).filter( v => typeof v === 'object').length, '', false, key+'inicio', 0, dict, '', 2, false)
+    
+
+    window['marker'+key] = L.marker([obj[key]['NORTE'], obj[key]['ESTE']]).addTo(myMap)
+    window['clicked'+'marker'+key] = false
+    window['marker'+key].bindPopup(`<b>ID_EXPLORACION:</b><br>${obj[key]['ID_EXPLORACION']}`)
+    list.push(['marker'+key])
+
+    window['marker'+key].on('click', e => {
+        console.log('clicked')
+
+        
+        // location.href = './pag1.html'
+        $('#inicio').toggle()
+        window['marker'+key].openPopup()
+        if (!clicked) {
+            window['marker'+key].setIcon(greenIcon)
+            window['marker'+key].openPopup()
+            clicked = true
+            $("#inicio").children().hide(); 
+            $('#'+key+'inicio').show()
+        }
+        else {
+            window['marker'+key].setIcon(blueIcon)
+            clicked = false
+        }
+    }).on('mouseover', e => {
+        console.log('mouse over')
+        window['marker'+key].openPopup()
+    }).on('mouseout', e => {
+        console.log('Fueraa')
+        if (!window['clicked'+'marker'+key]) {
+        window['marker'+key].closePopup()
+        }
+    })
+    list.push(eval('marker'+key))
+})
+
+// ====================
+
+var cities = L.layerGroup(list);
+
+var overlayMaps = {
+    "Cities": cities
+};
+
+L.control.layers({}, overlayMaps).addTo(myMap);
 
 myMap.doubleClickZoom.disable()
 
