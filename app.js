@@ -323,7 +323,7 @@ Object.keys(obj).forEach(key => {
     var objMod = {}
 
     objMod[key] = obj[key]
-    unpack(objMod, Object.values(obj).filter( v => typeof v === 'object').length, '', false, key+'inicio', 0, dict, '', 2, false)
+    unpack(objMod, Object.values(obj).filter( v => typeof v === 'object').length, '', false, key+'inicio', 0, dict, '', 8, false)
     
 
     window['marker'+key] = L.marker([obj[key]['NORTE'], obj[key]['ESTE']]).addTo(myMap)
