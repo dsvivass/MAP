@@ -240,7 +240,7 @@ Object.values(obj).filter( v => {
     }
 })
 
-unpack(obj, Object.values(obj).filter( v => typeof v === 'object').length, 'begin', false, 'inicio', 0, dict, '', 4, false)
+unpack(obj, Object.values(obj).filter( v => typeof v === 'object').length, 'begin', false, 'inicio', 0, dict, '', 8, false)
 console.log(document.documentElement.innerHTML)
 
 // ----------------------
@@ -278,7 +278,9 @@ marker.on('click', e => {
     // arbol.style.display = 'block'
     $('#inicio').toggle() //Se esconde o se muestra cada vez que se hace un click
     marker.openPopup()
-    clicked = true
+    if (!clicked) {clicked = true}
+    else {clicked = false}
+    
     // arbol.toggle()
 }).on('mouseover', e => {
     console.log('mouse over')
